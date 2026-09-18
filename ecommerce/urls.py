@@ -18,16 +18,19 @@ from django.contrib import admin
 from django.urls import include, path
 
 from products import views as product_views
+from cart import views as cart_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Rest APIs
     path('api/', include('products.api.urls')),
+    path('api/', include('cart.api.urls')),
 
 
     # Server-rendered frontend
     path('', product_views.index, name='index'),
+    path('cart/', cart_views.cart_page, name='cart-page'),
 
 
 ]
