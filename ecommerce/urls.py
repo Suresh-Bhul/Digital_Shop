@@ -20,12 +20,15 @@ from django.urls import include, path
 from products import views as product_views
 from cart import views as cart_views
 from orders import views as order_views
+from accounts import views as account_views
+
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Rest APIs
+    path('api/', include('accounts.api.urls')),
     path('api/', include('products.api.urls')),
     path('api/', include('cart.api.urls')),
     path('api/', include('orders.api.urls')),
@@ -34,6 +37,8 @@ urlpatterns = [
 
     # Server-rendered frontend
     path('', product_views.index, name='index'),
+     path('login/', account_views.login_page, name='login-page'),
+    path('register/', account_views.register_page, name='register-page'),
     path('cart/', cart_views.cart_page, name='cart-page'),
     path('product/<int:pk>/', product_views.product_detail, name='product-detail-page'),
     path('checkout/', order_views.checkout_page, name='checkout-page'),
