@@ -23,7 +23,6 @@ from orders import views as order_views
 from accounts import views as account_views
 
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
 
@@ -32,12 +31,12 @@ urlpatterns = [
     path('api/', include('products.api.urls')),
     path('api/', include('cart.api.urls')),
     path('api/', include('orders.api.urls')),
-
+    path('api/', include('payments.api.urls')),
 
 
     # Server-rendered frontend
     path('', product_views.index, name='index'),
-     path('login/', account_views.login_page, name='login-page'),
+    path('login/', account_views.login_page, name='login-page'),
     path('register/', account_views.register_page, name='register-page'),
     path('cart/', cart_views.cart_page, name='cart-page'),
     path('product/<int:pk>/', product_views.product_detail, name='product-detail-page'),

@@ -12,6 +12,14 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import os
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # python-dotenv is optional;
+    pass
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +29,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!+%sxvz3a^jgms*nuviaju2243oru_&6ediuex$oa7(r0#tpnx'
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-dev-only-change-me-in-production'
+)
 
-ALLOWED_HOSTS = []
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
 # Application definition
@@ -57,6 +68,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -160,6 +172,31 @@ SIMPLE_JWT = {
 }
 
 
+# ---------------------------------------------------------------------------
+# CORS (frontend is served by Django itself, but kept permissive for local dev)
+# ---------------------------------------------------------------------------
+CORS_ALLOWED_ORIGINS = os.environ.get(
+    'CORS_ALLOWED_ORIGINS', 'http://localhost:8000,http://127.0.0.1:8000'
+).split(',')
+CORS_ALLOW_CREDENTIALS = True
+
+# Auth redirects (used by the server-rendered templates)
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+# Khalti payment gateway configuration
+KHALTI_SECRET_KEY = os.environ.get('KHALTI_SECRET_KEY', '')
+# Sandbox base URL for Khalti's Epayment API (v2). Override via env for production.
+KHALTI_BASE_URL = os.environ.get(
+    'KHALTI_BASE_URL', 'https://dev.khalti.com/api/v2'
+)
+# Where Khalti should send the user back to after payment.
+KHALTI_RETURN_URL = os.environ.get(
+    'KHALTI_RETURN_URL', 'http://localhost:8000/checkout/'
+)
+
+DEFAULT_CHARSET = 'utf-8'
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
