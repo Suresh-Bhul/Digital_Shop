@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from django.conf import settings
+from django.conf.urls.static import static
 from products import views as product_views
 from cart import views as cart_views
 from orders import views as order_views
@@ -43,7 +45,8 @@ urlpatterns = [
     path('checkout/', order_views.checkout_page, name='checkout-page'),
     path('orders/', order_views.orders_page, name='orders-page'),
     path('orders/<int:pk>/', order_views.order_detail_page, name='order-detail-page'),
-    
-
-
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
+
