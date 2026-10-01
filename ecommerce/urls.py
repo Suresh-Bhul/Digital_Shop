@@ -39,7 +39,9 @@ urlpatterns = [
     # Server-rendered frontend
     path('', product_views.index, name='index'),
     path('login/', account_views.login_page, name='login-page'),
-    path('register/', account_views.register_page, name='register-page'),
+    path('register/', account_views.register_page, name='register-page'),    
+    path('forgot-password/', account_views.forgot_password_page, name='forgot-password-page'),
+    path('reset-password/', account_views.reset_password_page, name='reset-password-page'),
     path('cart/', cart_views.cart_page, name='cart-page'),
     path('product/<int:pk>/', product_views.product_detail, name='product-detail-page'),
     path('checkout/', order_views.checkout_page, name='checkout-page'),

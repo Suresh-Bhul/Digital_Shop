@@ -157,6 +157,25 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 12,
     'EXCEPTION_HANDLER': 'ecommerce.exceptions.custom_exception_handler',
+
+     # --- NEW: rate limiting (feature request) -------------------------------
+    # Global anon/user throttles plus dedicated scopes for the sensitive auth
+    # endpoints (register/login/logout/password-reset), which are wired up
+    # with `throttle_scope`/`ScopedRateThrottle` on the individual views in
+    # accounts/api/views.py and accounts/api/throttles.py.
+    'DEFAULT_THROTTLE_CLASSES': (
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/day',
+        'user': '1000/day',
+        'auth_register': '10/hour',
+        'auth_login': '10/minute',
+        'auth_logout': '30/minute',
+        'password_reset': '5/hour',
+    },
+    # --- END NEW -------
 }
 
 
@@ -198,8 +217,23 @@ DEFAULT_CHARSET = 'utf-8'
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}
+# ---------------------------------------------------------------------------
+# NEW: Site URL (used to build absolute links inside emails, e.g. the
+# password-reset link, since those are sent outside of a request/response
+# cycle for some call sites).
+# ---------------------------------------------------------------------------
+SITE_URL = os.environ.get('SITE_URL', 'http://localhost:8000')
+
+# Email (used for password-reset emails and order-confirmation emails)
+# Defaults to Django's console backend so email content is simply printed to
+# the runserver console in local/dev environments where no SMTP server is
+# configured. Set EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_BACKEND = os.environ.get(
+    'EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend'
+)
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'no-reply@digitalshop.local')
