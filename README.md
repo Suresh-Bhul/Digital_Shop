@@ -1,6 +1,6 @@
 # Digital_Shop
 
-A portfolio-quality, full-stack e-commerce web application built with **Django** and **Django REST Framework**, using server-rendered HTML templates and vanilla JavaScript for the frontend, SQLite for storage, and **Khalti** for payments.
+A portfolio-quality, full-stack e-commerce web application built with **Django** and **Django REST Framework**, using server-rendered HTML templates and vanilla JavaScript for the frontend, SQLite for database, and **Khalti** for payments.
 
 ## Description
 
