@@ -150,3 +150,5 @@ Visit **http://127.0.0.1:8000/admin/** and log in with the superuser you created
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
